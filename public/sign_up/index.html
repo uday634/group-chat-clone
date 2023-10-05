@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #28a745; /* Green background color */
+            color: #fff; /* White text color */
+        }
+        .container {
+            background-color: #fff; /* White container background color */
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 450px;
+            width: 400px;
+        }
+        h2{
+            color: black;
+        }
+        .form-control{
+            transform: 0.4 ease-in;
+        }
+        .form-control:active, .form-control:hover{
+            box-shadow: 1px 1px 5px 5px #28a745;
+            transform: 0.4 ease-out;
+        }
+        .form-control:focus {
+            box-shadow: 1px 1px 5px 5px #28a745;
+            transform: scale(1.01);
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-2">Sign Up</h2>
+        <form>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn btn-success">Sign Up</button>
+        </form>
+    </div>
+
+    <!-- Include Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
