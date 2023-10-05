@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Enter your description here">
     <title>Sign Up</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -10,13 +12,13 @@
         /* Custom styles */
         body {
             background-color: #28a745; /* Green background color */
-            color: #fff; /* White text color */
+            color: #5e5e5e; /* White text color */
         }
         .container {
             background-color: #fff; /* White container background color */
             padding: 20px;
             border-radius: 10px;
-            max-height: 450px;
+            max-height: 500px;
             width: 400px;
         }
         h2{
@@ -39,7 +41,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="mb-2">Sign Up</h2>
-        <form>
+        
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter your name">
@@ -56,8 +58,8 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" placeholder="Enter your password">
             </div>
-            <button type="submit" class="btn btn-success">Sign Up</button>
-        </form>
+            <p id="error">err</p>
+            <button type="submit" id="signup" class="btn btn-success">Sign Up</button>
     </div>
 
     <!-- Include Bootstrap JS (optional) -->
