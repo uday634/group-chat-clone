@@ -23,3 +23,17 @@ exports.signup = async (req, res, next) => {
         res.status(500).json({ message: 'Something went wrong', error: err.message });
     }
 };
+
+
+exports.login = async (req, res, next) => {
+    try{
+        const {email, password} = req.body;
+        const user = await User.findOne({where: {email: email}})
+        
+        console.log(user.password)
+
+    }catch(err){
+        console.log(err)
+        res.status(401).json({message: 'email or password is incorrect'})
+    }
+} 
