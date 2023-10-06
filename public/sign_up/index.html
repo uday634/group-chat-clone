@@ -35,6 +35,11 @@
             box-shadow: 1px 1px 5px 5px #28a745;
             transform: scale(1.01);
         }
+        #error{
+            text-align: center;
+            color: #28a745;
+            font-weight:600 ;
+        }
         
     </style>
 </head>
@@ -58,12 +63,14 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" placeholder="Enter your password">
             </div>
-            <p id="error">err</p>
+            <p id="error"></p>
             <button type="submit" id="signup" class="btn btn-success">Sign Up</button>
+            <p>if user already exist? <a href="../login/index.html"></a>Click Here!</p>
     </div>
 
     <!-- Include Bootstrap JS (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./script.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
