@@ -1,6 +1,11 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/signup'); // Import your User model
+const User = require('../models/signup');
+const jws = require('jsonwebtoken')  // Import your User model
 
+
+function generateToken(id){
+    return jws.sign({userId: id}, 'secreatekey')
+} 
 exports.signup = async (req, res, next) => {
     try {
         const { name, email, phoneNumber, password } = req.body; 
@@ -29,9 +34,12 @@ exports.login = async (req, res, next) => {
     try{
         const {email, password} = req.body;
         const user = await User.findOne({where: {email: email}})
-        
-        console.log(user.password)
-
+        const passwordmatch = await bcrypt.compare(password, user.password)
+        if(passwordmatch){
+            res.status(200).json({message: 'login successful', token: generateToken(user.id)})
+        }else{
+            return res.status(401).json({ message: 'Incrrect password'})
+        }
     }catch(err){
         console.log(err)
         res.status(401).json({message: 'email or password is incorrect'})

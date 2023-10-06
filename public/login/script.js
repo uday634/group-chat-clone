@@ -12,12 +12,17 @@ const loginData = async (data) => {
         setTimeout(() => {
             error.innerText = '';
         }, 4000);
+        if(postSignData.status === 200){
+            alert('successfuly login')
+        }else{
+            alert('credestials are wrong')
+        }
     } catch (err) {
         error.innerText = err.response.data.message; // Display error message from the server
         setTimeout(() => {
             error.innerText = '';
         }, 4000);
-        alert('something went wrong ' + err )
+        alert('something went wrong can not login')
         console.error(err);
     }
 };
