@@ -14,6 +14,7 @@ const loginData = async (data) => {
         }, 4000);
         if(postSignData.status === 200){
             alert('successfuly login')
+            window.location.href = '../userinterface/index.html'
         }else{
             alert('credestials are wrong')
         }
