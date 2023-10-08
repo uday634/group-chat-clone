@@ -11,123 +11,164 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-<style>
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-}
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
 
-.container {
-    display: flex;
-    height: 100vh;
-}
+      .container {
+        display: flex;
+        height: 100vh;
+      }
 
-.sidebar {
-    flex: 1;
-    background-color: #28a745;
-    color: white;
-    padding: 20px;
-    overflow-y: auto;
-    box-shadow: 0 0 9px 4px rgb(102, 102, 102);
-}
+      .sidebar {
+        flex: 1;
+        background-color: #28a745;
+        color: white;
+        padding: 20px;
+        overflow-y: auto;
+        box-shadow: 0 0 9px 4px rgb(102, 102, 102);
+      }
 
-.sidebar h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
+      .sidebar h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
 
-.sidebar li {
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+      .sidebar li {
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-.sidebar li:hover {
-    background-color: #28a745;
-    border-radius: 5px;
-}
+      .sidebar li:hover {
+        background-color: #28a745;
+        border-radius: 5px;
+      }
 
-.chat {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    box-shadow: 0 0 9px 4px rgb(102, 102, 102);
-}
+      .chat {
+        flex: 3;
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        box-shadow: 0 0 9px 4px rgb(102, 102, 102);
+      }
 
-.chat-header {
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    font-size: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+      .chat-header {
+        background-color: #28a745;
+        color: white;
+        padding: 10px;
+        font-size: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
 
-.chat-input {
-    display: flex;
-    padding: 10px;
-    background-color: #f0f0f0;
-}
+      .chat-input {
+        display: flex;
+        padding: 10px;
+        background-color: #f0f0f0;
+      }
 
-.chat-input input {
-    width: 80%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+      .chat-input input {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
 
-.chat-input button {
-    width: 18%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 2%;
-}
+      /* ... previous styles ... */
 
+      /* Style for sent messages */
+      .sent-message {
+        background-color: #28a745;
+        color: white;
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px 0;
+        align-self: flex-end;
+      }
 
-</style>
+      /* Style for received messages */
+      .received-message {
+        background-color: #f0f0f0;
+        color: #333;
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px 0;
+        align-self: flex-start;
+      }
+      
+      .username{
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ... previous styles ... */
+
+      .chat-input button {
+        width: 18%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 2%;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-        <div class="sidebar">
-            <h1>Chat App</h1>
-            <ul>
-                <li>Chat 1</li>
-                <li>Chat 2</li>
-                <li>Chat 3</li>
-                <!-- Add more chat items here -->
-            </ul>
+      <div class="sidebar">
+        <h1>Chat App</h1>
+        <ul>
+          <li>Chat 1</li>
+          <li>Chat 2</li>
+          <li>Chat 3</li>
+          <!-- Add more chat items here -->
+        </ul>
+      </div>
+      <div class="chat">
+        <div class="chat-header">
+          <h2>Chat 1</h2>
         </div>
-        <div class="chat">
-            <div class="chat-header">
-                <h2>Chat 1</h2>
-            </div>
-            <div class="chat-messages">
-                <!-- Chat messages will go here -->
-            </div>
-            <div class="chat-input">
-                <input type="text" placeholder="Type your message">
-                <button>Send</button>
-            </div>
+        <!-- ... previous code ... -->
+        <div class="chat-messages">
+          <div class="sent-message">
+            <p><p class="username">Name</p>Hi, this is a sent message.</p>
+          </div>
+          <div class="received-message">
+            <p><p class="username">Name</p>Hi, this is a received message.</p>
+          </div>
+          <div class="sent-message">
+            <p><p class="username">Name:</p>Hi, this is a sent message.</p>
+          </div>
         </div>
+        <!-- ... previous code ... -->
+
+        <div class="chat-input">
+          <input type="text" placeholder="Type your message" id="chatinputmessage" />
+          <button id="messagesend">Send</button>
+        </div>
+      </div>
     </div>
     <!-- Include Bootstrap JS (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

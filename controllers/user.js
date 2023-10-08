@@ -31,17 +31,22 @@ exports.signup = async (req, res, next) => {
 
 
 exports.login = async (req, res, next) => {
-    try{
-        const {email, password} = req.body;
-        const user = await User.findOne({where: {email: email}})
-        const passwordmatch = await bcrypt.compare(password, user.password)
-        if(passwordmatch){
-            res.status(200).json({message: 'login successful', token: generateToken(user.id)})
-        }else{
-            return res.status(401).json({ message: 'Incrrect password'})
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-    }catch(err){
-        console.log(err)
-        res.status(401).json({message: 'email or password is incorrect'})
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+            const token = generateToken(user.id);
+            res.status(200).json({ message: 'Login successful', token: token });
+        } else {
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error' });
     }
-} 
+};

@@ -7,6 +7,9 @@ const loginData = async (data) => {
     try {
         const postSignData = await axios.post('http://localhost:4000/user/login', data); // Use axios.post instead of axios
         let err = postSignData.data.message
+        const token = postSignData.data.token
+        console.log(token);
+        localStorage.setItem('token', token)
         error.innerText = err; // Display error message from the server
         alert(err)
         setTimeout(() => {
