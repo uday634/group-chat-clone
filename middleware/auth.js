@@ -12,6 +12,7 @@ exports.authenticate = async (req, res, next) => {
 
         const key = 'secreatekey'; // Replace with your actual secret key
         const user = jwt.verify(token, key);
+        console.log('happy user ' ,   user)
 
         // Now that you have the user ID from the token, you can fetch the user
         const currentUser = await User.findByPk(user.userId);

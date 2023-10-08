@@ -1,11 +1,15 @@
 const messagedata = require('../models/messagedata')
+const User = require('../models/signup')
 
 
 exports.storemessage =async (req, res, next) => {
     const message = req.body.message
     const userId = req.user.id
+    const name = req.user.name
+    console.log(name)
     try{
         const messageData = await messagedata.create({
+            name: name,
             message: message,
             userId: userId
         }) 
@@ -16,3 +20,23 @@ exports.storemessage =async (req, res, next) => {
     }
     
 }
+
+exports.sendmessage = async (req, res, next) => {
+    try {
+        console.log(req.user.id);
+        const messages = await messagedata.findAll();
+        const user = await User.findOne({where: {id: req.user.id}})
+        // Create an object containing both the user ID and messages
+        const responseData = {
+            userId: req.user.id,
+            name: user.name,
+            messages: messages
+        };
+
+        // Send the object as a JSON response
+        res.status(200).json(responseData);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Unable to fetch messages', error: err });
+    }
+};

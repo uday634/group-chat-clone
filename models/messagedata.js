@@ -8,6 +8,7 @@ const messagedata = sequelize.define('messagedata', {
         allowNull: false,
         primaryKey: true
     },
+    name: Sequelize.STRING,
     message: Sequelize.STRING,
 })
 
