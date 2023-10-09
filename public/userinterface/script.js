@@ -4,6 +4,76 @@ const sendbtn = document.getElementById("messagesend");
 const token = localStorage.getItem("token");
 var Name = "";
 
+
+
+
+let latestMessageId = -1; // Initialize latestMessageId from localStorage
+
+const fetchMessages = () => {
+  setInterval(async () => {
+    try {
+      const messagesResponse = await axios.get('http://localhost:4000/message/fetchmessage', {
+        headers: { Authorization: token },
+        params: { latestMessageId }, // Send the latestMessageId as a query parameter
+      });
+      const newMessages = messagesResponse.data.messages;
+      const id = messagesResponse.data.userId;
+      Name = messagesResponse.data.name;
+
+      // Retrieve messages from localStorage
+      const loadmessage = localStorage.getItem('messages');
+      const oldMessages = JSON.parse(loadmessage || '[]'); // Use an empty array as a default if 'messages' is not found
+
+      // Check if new messages are not already in the local message list
+      const messagesToAdd = newMessages.filter(newMessage => !oldMessages.some(oldMessage => oldMessage.id === newMessage.id));
+
+      // Merge old and new messages
+      const allMessages = [...oldMessages, ...messagesToAdd];
+
+      // Update latestMessageId if there are new messages
+      if (messagesToAdd.length > 0) {
+        latestMessageId = messagesToAdd[messagesToAdd.length - 1].id; // Update to the latest message ID
+        localStorage.setItem('latestMessageId', latestMessageId); // Store the latest message ID in localStorage
+      }
+
+      // Store all messages in localStorage
+      localStorage.setItem('messages', JSON.stringify(allMessages));
+
+      // Update the UI with all messages
+      updateUI(allMessages, id, Name);
+    } catch (err) {
+      console.log(err);
+    }
+  }, 2000);
+};
+
+
+
+
+const updateUI = (messages, id, Name) => {
+  chatContainer.innerHTML = "";
+
+  const messageHTML = messages.map((data) => {
+    const senderName = data.name;
+    const message = data.message;
+    const userId = data.userId;
+    const messageTypeClass = userId === id ? 'sent-message' : 'received-message';
+
+    return `<div class="${messageTypeClass}">
+              <p class="username">${userId === id ? Name : senderName}:</p>
+              ${message}
+            </div>`;
+  }).join('');
+
+  chatContainer.innerHTML = messageHTML;
+};
+
+// Initial fetch and update
+fetchMessages();
+
+
+
+//sending the new message to the server 
 const sendmessage = async (messagedata) => {
   let div = document.createElement("div");
   const obj = {
@@ -11,6 +81,7 @@ const sendmessage = async (messagedata) => {
   };
   div.setAttribute("class", "sent-message"); // Corrected this line
   div.innerHTML = `<p><p class="username">${Name} :</p>${messagedata}</p>`;
+  console.log(Name)
   chatContainer.appendChild(div);
   try {
     await axios.post("http://localhost:4000/message/messagedata", obj, {
@@ -22,41 +93,11 @@ const sendmessage = async (messagedata) => {
   }
 };
 
-const fetchMessages = () => {
-    setInterval(async () => {
-      try {
-        const messagesResponse = await axios.get("http://localhost:4000/message/fetchmessage", {
-          headers: { Authorization: token },
-        });
-        const messages = messagesResponse.data.messages;
-        const id = messagesResponse.data.userId;
-        let Name = messagesResponse.data.name;
-        chatContainer.innerHTML = '';
-  
-        messages.forEach((data) => {
-          let div = document.createElement("div");
-          let senderName = data.name;
-          let message = data.message;
-          let userId = data.userId;
-          if (userId === id) {
-            div.setAttribute("class", "sent-message");
-            div.innerHTML = `<p><p class="username">${senderName}:</p>${message}</p>`;
-            chatContainer.appendChild(div);
-          } else {
-            div.setAttribute("class", "received-message");
-            div.innerHTML = `<p><p class="username">${senderName}:</p>${message}</p>`;
-            chatContainer.appendChild(div);
-          }
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    }, 5000); // Set the interval time in milliseconds (e.g., 5000 ms = 5 seconds)
-  };
-  
-  // Call the function to start fetching messages
-  fetchMessages();
-  
+
+// Initial fetch and update
+fetchMessages();
+
+// Call the function to start fetching messages
 
 sendbtn.addEventListener("click", () => {
   const message = usermessage.value;
@@ -65,20 +106,8 @@ sendbtn.addEventListener("click", () => {
   usermessage.value = "";
 });
 
-const currentmessage = async () => {
-  try {
-    const messages = await axios.get(
-      "http://localhost:4000/message/fetchmessage",
-      {
-        headers: { Authorization: token },
-      }
-    );
-    let id = messages.data.userId;
-    let name = messages.data.name;
-  } catch (err) {
-    console.log(err);
-  }
-};
 
-fetchMessages();
-console.log(name);
+
+
+
+
