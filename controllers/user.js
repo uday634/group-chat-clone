@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
-const User = require('../models/signup');
+const User = require('../models/users');
 const jws = require('jsonwebtoken')  // Import your User model
 
 
 function generateToken(id){
     return jws.sign({userId: id}, 'secreatekey')
 } 
-exports.signup = async (req, res, next) => {
+exports.users = async (req, res, next) => {
     try {
         const { name, email, phoneNumber, password } = req.body; 
         const hashPassword = await bcrypt.hash(password, 10);
@@ -19,7 +19,7 @@ exports.signup = async (req, res, next) => {
                 password: hashPassword, 
             });
             console.log(user)
-            res.status(201).json({ message: 'Signup  is successful' });
+            res.status(201).json({ message: 'users  is successful' });
         }else{
             res.status(201).json({message: 'user already exist'})
         }

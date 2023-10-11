@@ -1,113 +1,101 @@
 const usermessage = document.getElementById("chatinputmessage");
+const groupList = document.getElementById("groupList");
+const groupaddbtn = document.getElementById("groupaddbtn");
+const groupname = document.getElementById("groupName");
 const chatContainer = document.getElementById("chat-messages");
 const sendbtn = document.getElementById("messagesend");
 const token = localStorage.getItem("token");
-var Name = "";
+const chatbox = document.getElementById('chat')
+let Name = "";
+let latestMessageId = -1;
+let currentgroupId = -1;
 
+sendbtn.addEventListener('click', () => {
+  console.log(currentgroupId,Name,usermessage.value)
+  const div = document.createElement('div')
+  let message = usermessage.value;
+  div.setAttribute('class', 'sent-message');
+  div.innerHTML = `<p><p class="username">${Name} :</p>${usermessage.value}</p>`;
+  chatContainer.appendChild(div)
+  if(message && message.trim().length>0){
+    axios.post('http://localhost:4000/message/sendgroupmessage',{
+      groupId: currentgroupId,
+      message: message
+    }, {headers: {Authorization: token }} ).then(result=> console.log('message sent successfuly')).catch(err => console.log(err))
 
-
-
-let latestMessageId = -1; // Initialize latestMessageId from localStorage
-
-const fetchMessages = () => {
-  setInterval(async () => {
-    try {
-      const messagesResponse = await axios.get('http://localhost:4000/message/fetchmessage', {
-        headers: { Authorization: token },
-        params: { latestMessageId }, // Send the latestMessageId as a query parameter
-      });
-      const newMessages = messagesResponse.data.messages;
-      const id = messagesResponse.data.userId;
-      Name = messagesResponse.data.name;
-
-      // Retrieve messages from localStorage
-      const loadmessage = localStorage.getItem('messages');
-      const oldMessages = JSON.parse(loadmessage || '[]'); // Use an empty array as a default if 'messages' is not found
-
-      // Check if new messages are not already in the local message list
-      const messagesToAdd = newMessages.filter(newMessage => !oldMessages.some(oldMessage => oldMessage.id === newMessage.id));
-
-      // Merge old and new messages
-      const allMessages = [...oldMessages, ...messagesToAdd];
-
-      // Update latestMessageId if there are new messages
-      if (messagesToAdd.length > 0) {
-        latestMessageId = messagesToAdd[messagesToAdd.length - 1].id; // Update to the latest message ID
-        localStorage.setItem('latestMessageId', latestMessageId); // Store the latest message ID in localStorage
-      }
-
-      // Store all messages in localStorage
-      localStorage.setItem('messages', JSON.stringify(allMessages));
-
-      // Update the UI with all messages
-      updateUI(allMessages, id, Name);
-    } catch (err) {
-      console.log(err);
-    }
-  }, 2000);
-};
-
-
-
+    usermessage.value = '';
+  }else{
+    console.err('message box cant be empty')
+    alert('message cant be emepty')
+  }
+})
 
 const updateUI = (messages, id, Name) => {
-  chatContainer.innerHTML = "";
+  // Clear the chat container
+  chatContainer.innerHTML = '';
 
-  const messageHTML = messages.map((data) => {
-    const senderName = data.name;
-    const message = data.message;
-    const userId = data.userId;
-    const messageTypeClass = userId === id ? 'sent-message' : 'received-message';
-
-    return `<div class="${messageTypeClass}">
-              <p class="username">${userId === id ? Name : senderName}:</p>
-              ${message}
-            </div>`;
-  }).join('');
-
-  chatContainer.innerHTML = messageHTML;
+  messages.messages.forEach(data => {
+    let div = document.createElement('div');
+    let message = data.message;
+    let name = data.name;
+    let userid = data.userId;
+    console.log(message)
+    if(id === userid){
+      div.setAttribute('class', 'sent-message');
+      div.innerHTML = `<p><p class="username">${name} :</p>${message}</p>`;
+    }else{
+      div.setAttribute('class', 'received-message');
+      div.innerHTML = `<p><p class="username">${name} :</p>${message}</p>`;
+    }
+    chatContainer.appendChild(div);
+  });
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 };
 
-// Initial fetch and update
-fetchMessages();
 
 
+function groupUI(Id, groupName) {
+  let li = document.createElement('li');
+  const button = document.createElement('button');
+  button.textContent = groupName;
+  button.addEventListener('click', () => {
+    
+    currentgroupId = Id;
+    axios.get(`http://localhost:4000/message/${Id}`, {
+      headers: { Authorization: token },
+    }).then(res => {
+      chatbox.removeAttribute('hidden');
+      
+      updateUI(res.data, res.data.userId, Name);
+      
+    }).catch(err => console.log(err));
+  });
+  li.appendChild(button);
+  groupList.appendChild(li);
+}
 
-//sending the new message to the server 
-const sendmessage = async (messagedata) => {
-  let div = document.createElement("div");
-  const obj = {
-    message: messagedata,
-  };
-  div.setAttribute("class", "sent-message"); // Corrected this line
-  div.innerHTML = `<p><p class="username">${Name} :</p>${messagedata}</p>`;
-  console.log(Name)
-  chatContainer.appendChild(div);
+
+const groups = async () => {
   try {
-    await axios.post("http://localhost:4000/message/messagedata", obj, {
+    const response = await axios.get("http://localhost:4000/message/groups", {
       headers: { Authorization: token },
     });
+    
+
+    if (response.status === 200) {
+      const data = response.data.groups;
+      Name = response.data.user.name
+      data.forEach((group) => {
+        let groupId = group.groupId;
+        let groupName = group.name;
+        groupUI(groupId, groupName);
+      });
+    } else {
+      console.error("Failed to fetch groups with status:", response.status);
+    }
   } catch (err) {
-    console.log(err);
-    // Handle the error, e.g., show an error message to the user
+    console.error("Error:", err);
   }
 };
 
-
-// Initial fetch and update
-fetchMessages();
-
-// Call the function to start fetching messages
-
-sendbtn.addEventListener("click", () => {
-  const message = usermessage.value;
-
-  sendmessage(message);
-  usermessage.value = "";
-});
-
-
-
-
-
-
+groups();

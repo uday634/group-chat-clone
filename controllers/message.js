@@ -1,5 +1,7 @@
 const messagedata = require('../models/messagedata')
-const User = require('../models/signup')
+const Group = require('../models/group')
+const GroupUser = require('../models/groupuser')
+const User = require('../models/users')
 const Sequelize = require('sequelize')
 
 
@@ -23,9 +25,7 @@ exports.storemessage =async (req, res, next) => {
 }
 
 exports.sendmessage = async (req, res, next) => {
-    try {
-        console.log(req.user.id);
-        
+    try {        
         // Get the latestMessageId from the query parameters (if provided)
         const latestMessageId = req.query.latestMessageId || null;
 
@@ -54,5 +54,34 @@ exports.sendmessage = async (req, res, next) => {
         res.status(500).json({ message: 'Unable to fetch messages', error: err });
     }
 };
+
+exports.group= async(req, res, next) => {
+    try{
+        // const user = await User.findOne({where: {id: req.user.userId}})
+        const group = await Group.create({
+            name : req.body.groupName,
+            createdby : req.user.id
+        }) 
+        const groupuser = await GroupUser.create({
+            groupId: group.groupId,
+            userId: req.user.id
+        })
+        
+        
+    }catch(err){
+        console.log(err)
+        res.status(401).json({message: 'data not reseived', err: err})
+    }
+}
+
+exports.groups = async(req, res, next)=> {
+    try{
+        const user = req.user
+        const groups = await Group.findAll()
+        res.status(200).json({groups,user})
+    }catch(err){
+        res.status(401).json({message: 'something went wrong while feating groups', error: err})
+    }
+}
 
 
