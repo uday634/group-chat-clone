@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="description" content="Enter your description here" />
-    <title>Sign Up</title>
+    <title>Group Chat</title>
     <!-- Include Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -116,8 +116,8 @@
         margin: 10px 0;
         align-self: flex-start;
       }
-      
-      .username{
+
+      .username {
         font-size: 12px;
         margin: 0;
         padding: 0;
@@ -138,19 +138,20 @@
         margin-left: 2%;
       }
 
-      #groupcreate{
+      #groupcreate {
         font-family: sans-serif;
       }
-      #groupcreate input,button{
+      #groupcreate input,
+      button {
         border-radius: 5px;
         border: none;
         margin-bottom: 25px;
       }
-      #groupcreate button{
+      #groupcreate button {
         background-color: #ffffff;
         font-size: medium;
       }
-      #groupList li a{
+      #groupList li a {
         color: rgb(0, 0, 0);
         background-color: #ffffff;
         padding: 6px;
@@ -158,43 +159,58 @@
         margin-bottom: 6px;
         transition: 0.3s ease-in;
       }
-      #groupList li button:hover{
-        color: white;
-        background-color: #28a745;
-        transition: 0.3s ease-out;
-        box-shadow: 0 0 8px 2px #333;
-        text-decoration: none;
-        display: block;        
+      #joingroup,
+      #joinchat {
+        transition: 0.2s ease-in;
       }
-
-
+      #joingroup:hover,
+      #joinchat:hover {
+        transition: 0.2s ease-out;
+        color: white;
+        background-color: black;
+      }
+      #chatHeading {
+        font-size: 40px;
+        background-color: #3d3d3d;
+        border-radius: 9px;
+        text-align: center;
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="sidebar">
-        <h1>Chat App</h1>
+        <p id="chatHeading">Chat App</p>
         <div id="groupcreate">
-         <input type="text" placeholder="Enter the group name" id="groupName">
-        <button id="groupaddbtn">Add</button> 
+          <input
+            type="text"
+            placeholder="Enter the group name"
+            id="groupName"
+          />
+          <button id="groupaddbtn">Add</button>
         </div>
         <ul id="groupList">
-
-
+          <!-- groupname goes here -->
         </ul>
       </div>
-      <div class="chat" hidden id="chat">
+      <div class="chat" id="chat">
         <div class="chat-header">
-          <h2>Chat</h2>
+          <h2 id="group-name">Chat</h2>
         </div>
         <!-- ... previous code ... -->
-        <div class="chat-messages" id="chat-messages" >
+
+        <div class="chat-messages" id="chat-messages">
           
         </div>
         <!-- ... previous code ... -->
 
         <div class="chat-input">
-          <input type="text" placeholder="Type your message" id="chatinputmessage" />
+          <input
+            type="text"
+            placeholder="Type your message"
+            id="chatinputmessage"
+          />
           <button id="messagesend">Send</button>
         </div>
       </div>
@@ -203,6 +219,5 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./script.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
   </body>
 </html>

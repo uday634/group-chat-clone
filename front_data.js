@@ -1,101 +1,89 @@
-const fetchMessages = () => {
-    setInterval(async () => {
-      try {
-        const messagesResponse = await axios.get('http://localhost:4000/message/fetchmessage', {
-          headers: { Authorization: token },
-          params: { latestMessageId },
-        });
-  
-        if (messagesResponse.status === 200) {
-          const newMessages = messagesResponse.data.messages;
-          const id = messagesResponse.data.userId;
-          Name = messagesResponse.data.name;
-  
-          const loadmessage = localStorage.getItem('messages');
-          const oldMessages = JSON.parse(loadmessage || '[]');
-  
-          const messagesToAdd = newMessages.filter(newMessage => !oldMessages.some(oldMessage => oldMessage.id === newMessage.id));
-  
-          const allMessages = [...oldMessages, ...messagesToAdd];
-  
-          if (messagesToAdd.length > 0) {
-            latestMessageId = messagesToAdd[messagesToAdd.length - 1].id;
-            localStorage.setItem('latestMessageId', latestMessageId);
-          }
-  
-          localStorage.setItem('messages', JSON.stringify(allMessages));
-  
-          updateUI(allMessages, id, Name);
-        } else {
-          console.error('Failed to fetch messages with status:', messagesResponse.status);
-        }
-      } catch (err) {
-        console.error('Error:', err);
-      }
-    }, 2000);
-  };
-  
-  const updateUI = (messages, id, Name) => {
-    chatContainer.innerHTML = "";
-  
-    const messageHTML = messages
-      .map((data) => {
-        const senderName = data.name;
-        const message = data.message;
-        const userId = data.userId;
-        const messageTypeClass =
-          userId === id ? "sent-message" : "received-message";
-  
-        return `<div class="${messageTypeClass}">
-                <p class="username">${userId === id ? Name : senderName}:</p>
-                ${message}
-              </div>`;
-      })
-      .join("");
-  
-    chatContainer.innerHTML = messageHTML;
-  
-    // Scroll to the bottom of the chat container
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  };
-  
-  const sendmessage = async (messagedata) => {
-    let div = document.createElement("div");
-    const obj = {
-      message: messagedata,
-    };
-    div.setAttribute("class", "sent-message");
-    div.innerHTML = `<p class="username">${Name}:</p>${messagedata}`;
-    chatContainer.appendChild(div);
-  
-    try {
-      await axios.post("http://localhost:4000/message/messagedata", obj, {
-        headers: { Authorization: token },
-      });
-  
-      // Scroll to the bottom of the chat container
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  };
-  
-  sendbtn.addEventListener("click", () => {
-    const message = usermessage.value;
-  
-    if (message) {
-      sendmessage(message);
-      usermessage.value = "";
-    } else {
-      console.error("Message cannot be empty");
-    }
-  });
+sendbtn.addEventListener('click', () => {
+  console.log(currentgroupId,Name,usermessage.value)
+  const div = document.createElement('div')
+  let message = usermessage.value;
+  div.setAttribute('class', 'sent-message');
+  div.innerHTML = `<p><p class="username">${Name} :</p>${usermessage.value}</p>`;
+  chatContainer.appendChild(div)
+  if(message && message.trim().length>0){
+    axios.post('http://localhost:4000/message/sendgroupmessage',{
+      groupId: currentgroupId,
+      message: message
+    }, {headers: {Authorization: token }} ).then(result=> console.log('message sent successfuly')).catch(err => console.log(err))
 
-
-  function groupUI(Id, groupName) {
-    let li = document.createElement('li');
-    const button = document.createElement('button');
-    button.textContent = groupName;
-    li.appendChild(button);
-    groupList.appendChild(li);
+    usermessage.value = '';
+  }else{
+    console.err('message box cant be empty')
+    alert('message cant be emepty')
   }
+})
+
+const updateUI = (messages, id, Name) => {
+  // Clear the chat container
+  chatContainer.innerHTML = '';
+
+  messages.messages.forEach(data => {
+    let div = document.createElement('div');
+    let message = data.message;
+    let name = data.name;
+    let userid = data.userId;
+    console.log(message)
+    if(id === userid){
+      div.setAttribute('class', 'sent-message');
+      div.innerHTML = `<p><p class="username">${name} :</p>${message}</p>`;
+    }else{
+      div.setAttribute('class', 'received-message');
+      div.innerHTML = `<p><p class="username">${name} :</p>${message}</p>`;
+    }
+    chatContainer.appendChild(div);
+  });
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+};
+
+
+
+function groupUI(Id, groupName) {
+  let li = document.createElement('li');
+  const button = document.createElement('button');
+  button.textContent = groupName;
+  button.addEventListener('click', () => {
+    
+    currentgroupId = Id;
+    axios.get(`http://localhost:4000/message/${Id}`, {
+      headers: { Authorization: token },
+    }).then(res => {
+      chatbox.removeAttribute('hidden');
+      
+      updateUI(res.data, res.data.userId, Name);
+      
+    }).catch(err => console.log(err));
+  });
+  li.appendChild(button);
+  groupList.appendChild(li);
+}
+
+
+const groups = async () => {
+  try {
+    const response = await axios.get("http://localhost:4000/message/groups", {
+      headers: { Authorization: token },
+    });
+    
+
+    if (response.status === 200) {
+      const data = response.data.groups;
+      Name = response.data.user.name
+      data.forEach((group) => {
+        let groupId = group.groupId;
+        let groupName = group.name;
+        groupUI(groupId, groupName);
+      });
+    } else {
+      console.error("Failed to fetch groups with status:", response.status);
+    }
+  } catch (err) {
+    console.error("Error:", err);
+  }
+};
+
+groups();
