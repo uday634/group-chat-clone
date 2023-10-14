@@ -158,7 +158,6 @@ function joinChat(button, username, userid, groupid, createdby, groupname) {
         const messages = await axios.get(`http://localhost:4000/message/${groupid}`, {
           headers: { Authorization: token },
         });
-        console.log(messages.data);
         displayMessages(messages.data, username, userid, createdby);
         currentgroupId = groupid;
         console.log(currentgroupId);
@@ -178,7 +177,6 @@ function groupdelete(button, groupId){
 }
 
 function GroupsUI(arr, currusername, curruserid) {
-  console.log(arr);
   arr.forEach((data) => {
     const createdby = data.createdby;
     const groupname = data.name;
@@ -217,7 +215,6 @@ function GroupsUI(arr, currusername, curruserid) {
 
     joinGroup(joingroup, currusername, curruserid, groupId);
     joinChat(joinchat, currusername, curruserid, groupId, createdby, groupname);
-    console.log(curruserid, currusername, groupname);
   });
 }
 
