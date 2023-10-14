@@ -4,6 +4,8 @@ const authenticate = require('../middleware/auth')
 const Messagedata = require('../models/messagedata')
 const User = require('../models/users')
 const GroupUser = require('../models/groupuser');
+const Group = require('../models/group');
+
 
 const router = express.Router();
 
@@ -24,15 +26,30 @@ router.get('/:id',authenticate.authenticate, async(req, res, next) => {
     }
 })
 
-router.delete('/:deleteId',authenticate.authenticate, async(req, res, next) =>{
-    console.log('uday kumar'+req.params.deleteId)
-    try{
-        const deletedmessage = await Messagedata.destroy({where: {id: req.params.deleteId}})
-        console.log(deletedmessage)
-    }catch(err){
-        res.status(401).json({message: 'cant delete the message', error: err})
+router.delete('/group/:groupId', authenticate.authenticate, async (req, res, next) => {
+    try {
+        const deletedGroup = await Group.destroy({ where: { id: req.params.groupId } });
+        console.log(deletedGroup);
+        res.status(204).end();
+    } catch (err) {
+        res.status(401).json({ message: 'cant delete the group', error: err });
     }
-})
+});
+
+router.delete('/message/:deleteId', authenticate.authenticate, async (req, res, next) => {
+    try {
+        const deletedMessage = await Messagedata.destroy({ where: { id: req.params.deleteId } });
+        console.log(deletedMessage);
+        res.status(204).end();
+    } catch (err) {
+        res.status(401).json({ message: 'cant delete the message', error: err });
+    }
+});
+
+// Delete a group
+
+
+
 
 
 module.exports = router

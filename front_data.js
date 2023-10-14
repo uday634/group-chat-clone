@@ -87,3 +87,10 @@ const groups = async () => {
 };
 
 groups();
+deleteGroup.addEventListener('click', async() => {
+  try{
+    const deletegroup = await axios.delete(`http://localhost:4000/message/group/${groupId}`, {headers : { Authorization: token }})
+  }catch(err){
+    console.log(err)
+  }
+})

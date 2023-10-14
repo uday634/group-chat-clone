@@ -123,7 +123,7 @@ function displayMessages(messages, username, userid, createdby) {
 
     deletemessage.addEventListener('click', async () => {
       try {
-        const admindelete = await axios.delete(`http://localhost:4000/message/${messageId}`, {
+        const admindelete = await axios.delete(`http://localhost:4000/message/message/${messageId}`, {
           headers: { Authorization: token },
         });
         console.log(admindelete);
@@ -169,7 +169,16 @@ function joinChat(button, username, userid, groupid, createdby, groupname) {
   });
 }
 
-function GroupsUi(arr, currusername, curruserid) {
+function groupdelete(button, groupId){
+  button.addEventListener('click',() => {
+    axios.delete(`http://localhost:4000/message/group/${groupId}`, {headers : { Authorization: token }}).then(res =>{
+      console.log(res)
+    }).catch(err=> console.log(err))
+  })
+}
+
+function GroupsUI(arr, currusername, curruserid) {
+  console.log(arr);
   arr.forEach((data) => {
     const createdby = data.createdby;
     const groupname = data.name;
@@ -180,8 +189,24 @@ function GroupsUi(arr, currusername, curruserid) {
     const joinchat = document.createElement("button");
     joingroup.innerText = "joingroup";
     joinchat.innerText = "chat";
-    joingroup.id = "joingroup";
-    joinchat.id = "joinchat";
+
+    if (createdby === curruserid) {
+      // Check if the current user created the group
+      const deleteGroup = document.createElement("button");
+      deleteGroup.innerText = `Delete Group: ${groupname}`;
+      deleteGroup.addEventListener("click", async () => {
+        try {
+          const deletegroup = await axios.delete(`http://localhost:4000/message/group/${groupId}`, {
+            headers: { Authorization: token },
+          });
+          console.log(deletegroup);
+          
+        } catch (err) {
+          console.log(err);
+        }
+      });
+      li.appendChild(deleteGroup);
+    }
 
     const p = document.createElement("p");
     p.innerHTML = groupname;
@@ -192,8 +217,10 @@ function GroupsUi(arr, currusername, curruserid) {
 
     joinGroup(joingroup, currusername, curruserid, groupId);
     joinChat(joinchat, currusername, curruserid, groupId, createdby, groupname);
+    console.log(curruserid, currusername, groupname);
   });
 }
+
 
 async function fetchGroups() {
   try {
@@ -203,7 +230,7 @@ async function fetchGroups() {
     Name = response.data.user.name;
     chatheading.innerHTML = Name;
 
-    GroupsUi(response.data.groups, response.data.user.name, response.data.user.id);
+    GroupsUI(response.data.groups, response.data.user.name, response.data.user.id);
     currentUserId = response.data.user.id;
   } catch (err) {
     console.log(err);
